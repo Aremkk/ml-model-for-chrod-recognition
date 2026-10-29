@@ -3,7 +3,7 @@ import librosa
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 
-TRAIN_PATH = r'C:\datasets\carchive\Chords\Training'
+TRAIN_PATH = [r'C:\datasets\carchive\Chords\Training']
 TEST_PATH = r'C:\datasets\carchive\Chords\Test'
 
 SR = 22050

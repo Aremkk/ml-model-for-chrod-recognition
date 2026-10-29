@@ -11,6 +11,7 @@
 Запуск:
   pip install sounddevice
   python realtime_chords.py --model chord_model.keras
+  python realtime_chords.py --model models36\\model_....keras --classes models36\\classes.npy   # модель на 36 классов
   python realtime_chords.py --list-devices            # список микрофонов
   python realtime_chords.py --device 3                # выбрать микрофон по номеру
   python realtime_chords.py --file путь\\к\\записи.wav  # проверка без микрофона
@@ -203,6 +204,10 @@ def main():
 
     model = load_model(args.model)
     classes = load_classes(args.classes)
+    if model.output_shape[-1] != len(classes):
+        sys.exit(f'Модель различает {model.output_shape[-1]} аккордов, а список классов содержит {len(classes)}. '
+                 f'Укажи файл classes.npy, сохранённый вместе с этой моделью: --classes путь\\classes.npy')
+    print(f'Классов: {len(classes)}')
     if args.file:
         run_file(model, classes, args.file)
     else:

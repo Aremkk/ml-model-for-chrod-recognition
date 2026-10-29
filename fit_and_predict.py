@@ -38,8 +38,8 @@ model.fit(
 
 y_pred_prob = model.predict(X_test)
 y_pred_classes = np.argmax(y_pred_prob, axis=1)
-model.save(
-    f'cm/Recognizing_chord_with_bass_seed{SEED}.keras', overwrite=True )
+#model.save(
+    #f'cm/Recognizing_chord_with_bass_seed{SEED}.keras', overwrite=True )
 
 variant = f'хромаграмма + бас (SEED {SEED})' if USE_BASS else f'только хромаграмма (SEED {SEED})'
 print(f"\nПризнаки: {variant}")

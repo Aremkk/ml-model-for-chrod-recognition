@@ -16,6 +16,13 @@ USE_BASS = True               # должно совпадать с тем, на 
 BASS_FMIN = librosa.note_to_hz('E2')
 BASS_N_OCTAVES = 1
 
+# Как считать основную хромаграмму:
+#   'stft' — как в статье (кратковременное преобразование Фурье, окно 2048);
+#   'cqt'  — преобразование с постоянной добротностью: в нижнем и среднем регистре
+#            различает соседние полутоны (G3 и G#3 отстоят всего на ~12 Гц, а бин STFT ≈ 10,8 Гц).
+# Модели из статьи обучены с 'stft' — для них здесь должно стоять 'stft'.
+MAIN_CHROMA = 'cqt'
+
 N_FEATURES = 24 if USE_BASS else 12
 CLIP_SAMPLES = MAX_TIME_STEPS * HOP_LENGTH   # сколько отсчётов покрывают 130 кадров
 
@@ -30,7 +37,10 @@ def fit_length(features, max_steps=MAX_TIME_STEPS):
 
 def extract_features(audio, sr=SR):
     """audio — моно-сигнал с частотой sr. Возвращает матрицу (MAX_TIME_STEPS, N_FEATURES)."""
-    chroma = librosa.feature.chroma_stft(y=audio, sr=sr, hop_length=HOP_LENGTH)
+    if MAIN_CHROMA == 'cqt':
+        chroma = librosa.feature.chroma_cqt(y=audio, sr=sr, hop_length=HOP_LENGTH)
+    else:
+        chroma = librosa.feature.chroma_stft(y=audio, sr=sr, hop_length=HOP_LENGTH)
     chroma = fit_length(chroma)
     if not USE_BASS:
         return chroma.T
